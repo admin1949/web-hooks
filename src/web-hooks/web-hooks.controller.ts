@@ -17,7 +17,7 @@ export class UserController {
     console.log('body is', body);
     const status = await this.webHooksService.checkRequest(
       process.env.WEBHOOK_SECRET,
-      header['x-hub-signature-256'],
+      header.signature,
       body,
     );
     console.log('check is ', status);
