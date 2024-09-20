@@ -14,6 +14,7 @@ export class UserController {
   ) {
     const body = req.rawBody?.toString() || '';
 
+    console.log('hader is ', header);
     console.log('body is', body);
     const status = await this.webHooksService.checkRequest(
       process.env.WEBHOOK_SECRET,
