@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
-import Crypto from 'node:crypto';
+import { subtle } from 'node:crypto';
 
 @Injectable()
 export class WebHooksService {
@@ -82,7 +82,7 @@ export class WebHooksService {
 
     const keyBytes = this.encoder.encode(secret);
     const extractable = false;
-    const key = await Crypto.subtle.importKey(
+    const key = await subtle.importKey(
       'raw',
       keyBytes,
       algorithm,
@@ -92,12 +92,7 @@ export class WebHooksService {
 
     const sigBytes = this.hexToBytes(signature);
     const dataBytes = this.encoder.encode(payload);
-    const equal = await Crypto.subtle.verify(
-      algorithm.name,
-      key,
-      sigBytes,
-      dataBytes,
-    );
+    const equal = await subtle.verify(algorithm.name, key, sigBytes, dataBytes);
 
     return equal;
   }
