@@ -90,7 +90,7 @@ export class WebHooksService {
       ['sign', 'verify'],
     );
 
-    const sigBytes = this.hexToBytes(signature);
+    const sigBytes = this.hexToBytes(signature.split('=')[1] || '');
     const dataBytes = this.encoder.encode(payload);
     const equal = await subtle.verify(algorithm.name, key, sigBytes, dataBytes);
 

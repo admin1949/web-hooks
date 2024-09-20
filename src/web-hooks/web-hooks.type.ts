@@ -27,5 +27,5 @@ export interface WebHooksPayload {
 
 export interface WebHooksHeader {
   'x-hub-signature-256': string;
-  signature: string;
+  'x-hub-signature': string;
 }
