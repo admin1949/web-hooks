@@ -1,7 +1,7 @@
-import { Body, Controller, Post, Headers, Req } from '@nestjs/common';
+import { Body, Controller, Post, Headers, Res } from '@nestjs/common';
 import { WebHooksService } from './web-hooks.service';
 import { WebHooksPayload, WebHooksHeader } from './web-hooks.type';
-import { RequestWithRawBody } from '../raw-body/raw-body.type';
+import { Response } from 'express';
 @Controller('web-hooks')
 export class UserController {
   constructor(private readonly webHooksService: WebHooksService) {}
@@ -10,18 +10,36 @@ export class UserController {
   async push(
     @Body() pushData: WebHooksPayload,
     @Headers() header: WebHooksHeader,
-    @Req() req: RequestWithRawBody,
+    @Res() res: Response,
   ) {
-    const body = req.rawBody?.toString() || '';
-
-    console.log('hader is ', header);
-    console.log('body is', body);
     const status = await this.webHooksService.checkRequest(
       process.env.WEBHOOK_SECRET,
       header['x-hub-signature-256'] || '',
-      body,
+      JSON.stringify(pushData),
     );
-    console.log('check is ', status);
-    return status;
+
+    if (!status) {
+      console.log('check Authorization failed');
+      res.status(401);
+      return 'Not Authorization';
+    }
+
+    if (!pushData) {
+      return;
+    }
+
+    const repository = pushData.repository.name;
+    const { id } = await this.webHooksService.create({
+      repository,
+      hash: pushData.after,
+      beforeHash: pushData.before,
+      commit: pushData.head_commit.message,
+      commitTime: new Date(pushData.head_commit.timestamp),
+      author: pushData.pusher.name,
+      email: pushData.pusher.email,
+    });
+
+    console.log(`push id is ${id}`);
+    return;
   }
 }

@@ -15,6 +15,7 @@ datasource db {
 
 model BuildHistory {
   id                    Int          @default(autoincrement()) @id
+  repository            String
   hash                  String
   beforeHash            String
   commit                String
