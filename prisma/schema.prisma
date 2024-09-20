@@ -14,10 +14,12 @@ datasource db {
 }
 
 model BuildHistory {
-  id           Int          @default(autoincrement()) @id
-  hash         String
-  commit       String
-  author       String
-  publishTime  DateTime
-  createTime   DateTime     @default(now())
+  id                    Int          @default(autoincrement()) @id
+  hash                  String
+  beforeHash            String
+  commit                String
+  commitTime            DateTime
+  author                String
+  email                 String
+  createTime            DateTime     @default(now())
 }
