@@ -54,11 +54,19 @@ export class UserController {
 
     this.webHooksTaskService.updateApp(config, pushData.after);
     console.log(`push id is ${id}`);
-    return;
+    return id;
   }
 
   @Post('test')
   async test() {
+    const config = this.webHooksService.getRepositoryConfig(
+      'teeu.cn',
+      'master',
+    )!;
+    this.webHooksTaskService.updateApp(
+      config,
+      '2bf55d3debfb31aa0af204c64b7eb4a64a1a29e1',
+    );
     return 1;
   }
 }

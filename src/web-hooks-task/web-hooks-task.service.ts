@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { spawn } from 'node:child_process';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 interface Task<T = unknown> {
   (): T | Promise<T>;
@@ -49,7 +49,16 @@ export class WebHooksTaskService {
       return;
     }
     return new Promise<boolean>((resolve, reject) => {
-      const [command, ...args] = cmd.split(' ').map((i) => i.trim());
+      const [command, ...args] = cmd
+        .split(' ')
+        .map((i) => i.trim())
+        .filter(Boolean);
+      if (!command) {
+        return;
+      }
+      console.log(
+        `${dayjs().format('YYYY-MM-DD HH:mm:ss')} start run task "${cmd}"`,
+      );
 
       const child = spawn(command, args, {
         cwd,
@@ -58,7 +67,9 @@ export class WebHooksTaskService {
         .once('disconnect', reject)
         .once('error', reject)
         .on('exit', (code) => {
-          console.log(`task "${cmd}" run done and code is ${code}`);
+          console.log(
+            `${dayjs().format('YYYY-MM-DD HH:mm:ss')} task "${cmd}" run done and code is ${code}`,
+          );
           if (code === 0) {
             resolve(true);
           } else {
@@ -67,8 +78,8 @@ export class WebHooksTaskService {
         });
 
       child.stdout
-        .on('data', (data) => {
-          console.log(dayjs().format('YYYY-MM-DD HH:mm:ss'), data);
+        .on('data', (data: Buffer) => {
+          console.log(Buffer.from(data).toString());
         })
         .on('error', reject);
     });
@@ -80,7 +91,7 @@ export class WebHooksTaskService {
     const task = async () => {
       const allTask = [
         'git fetch',
-        `git reset HEAD ${hash}`,
+        `git reset --hard ${hash}`,
         ...cmds,
       ].reverse();
 
