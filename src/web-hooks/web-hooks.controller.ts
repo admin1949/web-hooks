@@ -2,9 +2,15 @@ import { Body, Controller, Post, Headers, Res } from '@nestjs/common';
 import { WebHooksService } from './web-hooks.service';
 import { WebHooksPayload, WebHooksHeader } from './web-hooks.type';
 import { Response } from 'express';
+import { ConfigService } from '@nestjs/config';
+import { WebHooksTaskService } from 'src/web-hooks-task/web-hooks-task.service';
 @Controller('web-hooks')
 export class UserController {
-  constructor(private readonly webHooksService: WebHooksService) {}
+  constructor(
+    private readonly webHooksService: WebHooksService,
+    private readonly configServices: ConfigService,
+    private readonly webHooksTaskService: WebHooksTaskService,
+  ) {}
 
   @Post('push')
   async push(
@@ -29,6 +35,13 @@ export class UserController {
     }
 
     const repository = pushData.repository.name;
+    const branch = pushData.ref.slice(pushData.ref.lastIndexOf('/') + 1);
+
+    const config = this.webHooksService.getRepositoryConfig(repository, branch);
+    if (!config) {
+      return;
+    }
+
     const { id } = await this.webHooksService.create({
       repository,
       hash: pushData.after,
@@ -39,7 +52,13 @@ export class UserController {
       email: pushData.pusher.email,
     });
 
+    this.webHooksTaskService.updateApp(config, pushData.after);
     console.log(`push id is ${id}`);
     return;
+  }
+
+  @Post('test')
+  async test() {
+    return 1;
   }
 }

@@ -2,10 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { subtle } from 'node:crypto';
+import { ConfigService } from '@nestjs/config';
+import { ProjectsConfig } from 'src/config/project.type';
 
 @Injectable()
 export class WebHooksService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly configServices: ConfigService,
+  ) {}
 
   async find(userWhereUniqueInput: Prisma.BuildHistoryWhereUniqueInput) {
     return this.prisma.buildHistory.findUnique({
@@ -95,5 +100,28 @@ export class WebHooksService {
     const equal = await subtle.verify(algorithm.name, key, sigBytes, dataBytes);
 
     return equal;
+  }
+
+  getRepositoryConfig(repository: string, branch: string) {
+    const projects = this.configServices.get<ProjectsConfig>('projects');
+
+    if (!projects) {
+      return null;
+    }
+
+    const app = projects.apps[repository];
+    if (!app) {
+      return null;
+    }
+
+    const cmds = app.branchs[branch];
+    if (!cmds) {
+      return null;
+    }
+
+    return {
+      cwd: app.cwd,
+      cmds: cmds.cmds,
+    };
   }
 }
