@@ -27,11 +27,13 @@ export class UserController {
     @Res() res: Response,
   ) {
     console.time('push data');
+    const token = header['x-hub-signature-256'] || '';
     const status = await this.webHooksService.checkRequest(
       process.env.WEBHOOK_SECRET,
-      header['x-hub-signature-256'] || '',
+      token,
       JSON.stringify(pushData),
     );
+    console.log(token);
 
     if (!status) {
       console.log('check Authorization failed');
