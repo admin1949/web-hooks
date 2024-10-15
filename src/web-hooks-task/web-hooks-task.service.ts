@@ -143,9 +143,9 @@ export class WebHooksTaskService {
   <div>{{time}}</div>
   {{errorOutput}}
 </div>`,
-    success: `<img class="icon" src="http://localhost:5173/files/2024_10/1729001584865.svg">
+    success: `<img class="icon" src="https://teeu.cn/files/2024_10/1729002274730.svg">
 <div class="success">构建成功</div>`,
-    error: `<img class="icon" src="http://localhost:5173/files/2024_10/1729001578955.svg">
+    error: `<img class="icon" src="https://teeu.cn/files/2024_10/1729002271856.svg">
 <div class="error">构建失败</div>`,
     style: `.result-page {
   font-size: 16px;
