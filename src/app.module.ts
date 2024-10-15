@@ -7,6 +7,12 @@ import { UserController } from './web-hooks/web-hooks.controller';
 import { ConfigModule } from '@nestjs/config';
 import { projectsConfig } from './config/project';
 import { WebHooksTaskService } from './web-hooks-task/web-hooks-task.service';
+import { MailerService } from './mailer/mailer.service';
+import { MailerModule } from './mailer/mailer.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { WebHooksModule } from './web-hooks/web-hooks.module';
+import { WebHooksTaskModule } from './web-hooks-task/web-hooks-task.module';
+import { TestModule } from './test/test.module';
 
 @Module({
   imports: [
@@ -14,8 +20,19 @@ import { WebHooksTaskService } from './web-hooks-task/web-hooks-task.service';
       envFilePath: '.env',
       load: [projectsConfig],
     }),
+    MailerModule,
+    PrismaModule,
+    WebHooksModule,
+    WebHooksTaskModule,
+    TestModule,
   ],
   controllers: [AppController, UserController],
-  providers: [AppService, WebHooksService, PrismaService, WebHooksTaskService],
+  providers: [
+    AppService,
+    PrismaService,
+    WebHooksTaskService,
+    WebHooksService,
+    MailerService,
+  ],
 })
 export class AppModule {}
