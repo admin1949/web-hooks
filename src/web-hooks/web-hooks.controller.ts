@@ -24,7 +24,6 @@ export class UserController {
   async push(
     @Body() pushData: WebHooksPayload,
     @Headers() header: WebHooksHeader,
-    @Res() res: Response,
   ) {
     console.time('push data');
     const token = header['x-hub-signature-256'] || '';
@@ -37,12 +36,10 @@ export class UserController {
 
     if (!status) {
       console.log('check Authorization failed');
-      res.status(401);
       return 'Not Authorization';
     }
 
     if (!pushData) {
-      res.status(200);
       return {};
     }
 
@@ -77,7 +74,6 @@ export class UserController {
       this.mailerService.sendMeil(subject, html);
     });
     console.log(`push id is ${id}`);
-    res.status(200);
     console.timeEnd('push data');
     return {
       data: id,
