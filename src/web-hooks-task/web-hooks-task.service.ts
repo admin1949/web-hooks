@@ -143,27 +143,9 @@ export class WebHooksTaskService {
   <div>{{time}}</div>
   {{errorOutput}}
 </div>`,
-    success: `<svg
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 1024 1024"
-  width="50px" height="50px"
->
-  <path
-    fill="#67c23a"
-    d="M512 64a448 448 0 1 1 0 896 448 448 0 0 1 0-896m-55.808 536.384-99.52-99.584a38.4 38.4 0 1 0-54.336 54.336l126.72 126.72a38.272 38.272 0 0 0 54.336 0l262.4-262.464a38.4 38.4 0 1 0-54.272-54.336z"
-  ></path>
-</svg>
+    success: `<img class="icon" src="http://localhost:5173/files/2024_10/1729001584865.svg">
 <div class="success">构建成功</div>`,
-    error: `<svg
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 1024 1024"
-  width="50px" height="50px"
->
-  <path
-    fill="#f56c6c"
-    d="M512 64a448 448 0 1 1 0 896 448 448 0 0 1 0-896m0 393.664L407.936 353.6a38.4 38.4 0 1 0-54.336 54.336L457.664 512 353.6 616.064a38.4 38.4 0 1 0 54.336 54.336L512 566.336 616.064 670.4a38.4 38.4 0 1 0 54.336-54.336L566.336 512 670.4 407.936a38.4 38.4 0 1 0-54.336-54.336z"
-  ></path>
-</svg>
+    error: `<img class="icon" src="http://localhost:5173/files/2024_10/1729001578955.svg">
 <div class="error">构建失败</div>`,
     style: `.result-page {
   font-size: 16px;
@@ -174,6 +156,10 @@ export class WebHooksTaskService {
   flex-direction: column;
   align-items: center;
   gap: 12px;
+}
+.icon {
+  width: 60px;
+  height: 60px;
 }
 .success {
   color: #67c23a;
