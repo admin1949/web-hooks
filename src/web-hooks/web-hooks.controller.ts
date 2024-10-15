@@ -26,6 +26,7 @@ export class UserController {
     @Headers() header: WebHooksHeader,
     @Res() res: Response,
   ) {
+    console.time('push data');
     const status = await this.webHooksService.checkRequest(
       process.env.WEBHOOK_SECRET,
       header['x-hub-signature-256'] || '',
@@ -70,11 +71,12 @@ export class UserController {
         hash: pushData.after,
         commit: pushData.head_commit.message,
       });
-      const subject = `${repository} 构建${res.result ? '成功' : '失败'}`;
+      const subject = `${repository} 构建${res.status ? '成功' : '失败'}`;
       this.mailerService.sendMeil(subject, html);
     });
     console.log(`push id is ${id}`);
     res.status(200);
+    console.timeEnd('push data');
     return {
       data: id,
     };
